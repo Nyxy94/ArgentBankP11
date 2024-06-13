@@ -1,25 +1,22 @@
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
 
 const SecurityRoutes = ({ children }) => {
-  const token = useSelector((state) => state.login.userToken);
-  console.log("Token dans le state Redux :", token);
+  const isAuthenticated = () => {
+    const tokenInLocalStorage = localStorage.getItem("token");
+    const tokenInSessionStorage = sessionStorage.getItem("token");
 
-  const tokenInSessionStorage = sessionStorage.getItem('token'); // Vérifier la présence du token dans la session storage
-  console.log("Token récupéré du session storage :", tokenInSessionStorage);
+    return !!tokenInLocalStorage || !!tokenInSessionStorage; // Retourne true si le token existe dans localStorage ou sessionStorage, sinon false
+  };
 
-  const tokenInLocalStorage = localStorage.getItem('token'); // Vérifier la présence du token dans le local storage
+  const isUserAuthenticated = isAuthenticated();
 
-  // Vérifier si le token est présent dans la session storage mais pas dans le local storage
-  const shouldRedirect = tokenInSessionStorage && !tokenInLocalStorage && !token;
-
-  // Si une redirection est nécessaire, rediriger vers la page de connexion, sinon afficher les enfants
-  return shouldRedirect ? <Navigate to="/sign-in" /> : children;
+  return isUserAuthenticated ? children : <Navigate to="/sign-in" />;
 };
 
 SecurityRoutes.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
 };
 
 export default SecurityRoutes;

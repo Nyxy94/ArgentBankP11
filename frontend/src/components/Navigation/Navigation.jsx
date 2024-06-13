@@ -1,20 +1,20 @@
-import React, { useEffect } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { NavLink, Link } from "react-router-dom";
 import logo from "../../assets/argentBankLogo.webp";
 import "./Navigation.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { loginUser, logoutUser } from '../../redux/loginSlice';
-import { fetchUserProfile } from '../../redux/userSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { loginUser, logoutUser } from "../../redux/loginSlice";
+import { fetchUserProfile } from "../../redux/userSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 
 function Navigation() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.login.userToken);
-  const userProfil = useSelector((state) => state.user.userProfile)
+  const userProfil = useSelector((state) => state.user.userProfile);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (storedToken) {
       // Restaurer l'état de connexion de l'utilisateur lors du chargement initial
       dispatch(loginUser({ token: storedToken, userProfil: null }));
@@ -23,16 +23,18 @@ function Navigation() {
     }
   }, [dispatch]);
 
-  // Au clic sur logout, suppression du token du localStorage
+  // Au clic sur logout, suppression du token du localStorage et du sessionStorage
   const handleLogout = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     dispatch(logoutUser());
   };
 
   return (
     <nav className="main-nav">
       <NavLink className="main-nav__logo" to="/">
-        <img className="main-nav__logo--image"
+        <img
+          className="main-nav__logo--image"
           src={logo}
           alt="Argent bank logo"
         />
@@ -49,13 +51,11 @@ function Navigation() {
           )}
           {token ? (
             <NavLink className="main-nav-item" to="/" onClick={handleLogout}>
-
-              <FontAwesomeIcon icon={faSignOutAlt} />    Sign Out
+              <FontAwesomeIcon icon={faSignOutAlt} /> Sign Out
             </NavLink>
           ) : (
             <NavLink className="main-nav-item" to="/sign-in">
-              <i className="fa fa-user-circle"></i>
-              Sign In
+              <i className="fa fa-user-circle"></i> Sign In
             </NavLink>
           )}
         </div>
@@ -63,4 +63,5 @@ function Navigation() {
     </nav>
   );
 }
+
 export default Navigation;

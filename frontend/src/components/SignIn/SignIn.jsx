@@ -3,50 +3,64 @@ import { useNavigate } from "react-router-dom";
 import Button from "../Button/Button";
 import "./SignIn.scss";
 
-// Variables importées pour l'utilisation redux
-import { useDispatch, useSelector } from "react-redux"; // Importez également useSelector
-import { loginUserThunk } from "../../redux/loginSlice"; // Importez loginUserThunk à partir du loginSlice
-import { fetchUserProfile } from "../../redux/userSlice"; // Importez fetchUserProfile à partir du userSlice
-import { selectStatus } from "../../redux/loginSlice"; // Importez le sélecteur pour le statut
-import { selectUserError } from "../../redux/userSlice"; // Importez le sélecteur pour l'erreur
+import { useDispatch, useSelector } from "react-redux";
+import { loginUserThunk } from "../../redux/loginSlice";
+import { fetchUserProfile } from "../../redux/userSlice";
+import { selectStatus } from "../../redux/loginSlice";
+import { selectUserError } from "../../redux/userSlice";
 
 const SignIn = () => {
-  // Initialisation de variables pour le formulaire de connexion
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState(""); // État local pour stocker l'erreur
+  const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState("");
   const navigate = useNavigate();
-  const dispatch = useDispatch(); // Utilise useDispatch
-  const status = useSelector(selectStatus); // Sélecteur pour le statut
-  const errorRedux = useSelector(selectUserError); // Sélecteur pour l'erreur
+  const dispatch = useDispatch();
+  const status = useSelector(selectStatus);
+  const errorRedux = useSelector(selectUserError);
 
-  
+  const validate = () => {
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+      return "Invalid email or password";
+    }
+    if (!password || password.length < 8) {
+      return "Invalid email or password";
+    }
+    return null;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-        const loginResult = await dispatch(loginUserThunk({ email, password }));
 
-        if (loginResult.payload && loginResult.payload.body) {
-            const token = loginResult.payload.body.token;
-
-            if (rememberMe) {
-                localStorage.setItem('token', token); // Stockez dans localStorage
-            } else {
-                sessionStorage.setItem('token', token); // Stockez dans sessionStorage
-            }
-
-            await dispatch(fetchUserProfile(token));
-            navigate("/user");
-        } else {
-            setError("Identifiants incorrects");
-        }
-    } catch (error) {
-        console.error("Erreur lors de la connexion:", error);
-        setError("Identifiants incorrects");
+    const validationError = validate();
+    if (validationError) {
+      setValidationError(validationError);
+      return;
     }
-};
+
+    try {
+      const loginResult = await dispatch(loginUserThunk({ email, password }));
+
+      if (loginResult.payload && loginResult.payload.body) {
+        const token = loginResult.payload.body.token;
+
+        if (rememberMe) {
+          localStorage.setItem("token", token); // Stocker le token dans localStorage si Remember me est coché
+        } else {
+          sessionStorage.setItem("token", token); // Stocker le token dans sessionStorage sinon
+        }
+
+        await dispatch(fetchUserProfile(token));
+        navigate("/user");
+      } else {
+        setError("Identifiants incorrects");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la connexion:", error);
+      setError("Identifiants incorrects");
+    }
+  };
 
   const handleRememberMe = (e) => {
     setRememberMe(e.target.checked);
@@ -94,6 +108,8 @@ const SignIn = () => {
             disabled={status === "loading"}
           />
         </form>
+        {validationError && <p className="errorConexion">{validationError}</p>}
+        {error && <p className="errorConexion">{error}</p>}
         {errorRedux && <p className="errorConexion">{errorRedux}</p>}
       </section>
     </main>

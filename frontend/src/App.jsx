@@ -20,7 +20,7 @@ function App() {
         <Route path="/" element={<MainHome />} />
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/user" element={<SecurityRoutes> <User /> </SecurityRoutes>} />
-        <Route path="editUser" element= {<SecurityRoutes> <EditName/> </SecurityRoutes>} />
+        <Route path="/editUser" element= {<SecurityRoutes> <EditName/> </SecurityRoutes>} />
       </Routes>
       <Footer />
     </BrowserRouter>

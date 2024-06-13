@@ -1,15 +1,12 @@
+import React, { useState } from "react";
 import Button from "../Button/Button";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchChangeUsername, selectUserProfile, selectUserStatus, selectUserError } from "../../redux/userSlice.js";
 import "./EditName.scss";
 
-function EditName() {
-  const navigate = useNavigate();
+function EditName({ onClose }) {
   const dispatch = useDispatch();
 
-  // Sélectionne le profil utilisateur et le statut de l'utilisateur depuis le store Redux
   const userProfile = useSelector(selectUserProfile);
   const userStatus = useSelector(selectUserStatus);
   const userError = useSelector(selectUserError);
@@ -22,17 +19,18 @@ function EditName() {
   };
 
   const handleCancel = () => {
-    navigate("/user");
+    onClose(); // Appeler la fonction onClose pour fermer le formulaire
   };
 
   const handleForm = async (e) => {
     e.preventDefault();
     dispatch(fetchChangeUsername({ newUsername: newUserName, token }));
+    onClose(); // Fermer le formulaire après la soumission
   };
 
   return (
     <main className="main bg-dark">
-      <section className="sign-in ">
+      <section className="sign-in">
         <i className="fa fa-user-circle sign-in__icon"></i>
         <h1>Edit User info</h1>
         <form onSubmit={handleForm} onClick={(event) => event.stopPropagation()}>
@@ -43,7 +41,7 @@ function EditName() {
               onChange={handleChangeUserName}
               type="text"
               id="username"
-              placeholder="Tapez votre username"
+              placeholder="Enter your username"
               required
             />
           </div>
