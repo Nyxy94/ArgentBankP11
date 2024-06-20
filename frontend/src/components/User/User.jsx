@@ -6,7 +6,9 @@ import "./User.scss";
 import { useSelector } from "react-redux";
 
 function User() {
+  // Stocke les informations du profil utilisateur depuis l'état global Redux.
   const userProfile = useSelector(state => state.user.userProfile);
+  // Extrait le userName de userProfile si celui-ci existe, sinon il est null
   const username = userProfile ? userProfile.userName : null;
 
   const [isEditingName, setIsEditingName] = useState(false);

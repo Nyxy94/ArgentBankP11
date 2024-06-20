@@ -4,10 +4,8 @@ import Button from "../Button/Button";
 import "./SignIn.scss";
 
 import { useDispatch, useSelector } from "react-redux";
-import { loginUserThunk } from "../../redux/loginSlice";
-import { fetchUserProfile } from "../../redux/userSlice";
-import { selectStatus } from "../../redux/loginSlice";
-import { selectUserError } from "../../redux/userSlice";
+import { selectStatus, loginUserThunk } from "../../redux/loginSlice";
+import { selectUserError, fetchUserProfile  } from "../../redux/userSlice";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");

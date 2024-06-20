@@ -6,7 +6,6 @@ import "./EditName.scss";
 
 function EditName({ onClose }) {
   const dispatch = useDispatch();
-
   const userProfile = useSelector(selectUserProfile);
   const userStatus = useSelector(selectUserStatus);
   const userError = useSelector(selectUserError);
