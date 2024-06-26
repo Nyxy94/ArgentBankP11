@@ -36,7 +36,6 @@ function User() {
       ) : (
         <EditName onClose={handleCloseEditName} />
       )}
-
       <h2 className="sr-only">Accounts</h2>
       {accounts.map((account, index) => (
         <Account

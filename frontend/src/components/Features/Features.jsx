@@ -1,7 +1,6 @@
 import { PropTypes } from "prop-types";
 import "./Features.scss"
 
-
 function Feature({ alt, image, paragraph, title }) {
 
     return (
