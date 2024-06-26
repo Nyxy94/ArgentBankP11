@@ -27,6 +27,7 @@
     "server": "node ./server/server.js"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "vite": "^5.3.1"
   }
 }

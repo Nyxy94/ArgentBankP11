@@ -46,6 +46,7 @@ export const loginSlice = createSlice({
     }
 });
 
+// actions synchrones exportées qui sont appelées pour mettre à jour l'état de userToken
 export const { loginUser, logoutUser } = loginSlice.actions;
 
 // Sélecteurs
