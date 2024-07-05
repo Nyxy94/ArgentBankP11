@@ -101,6 +101,130 @@ paths:
           description: Invalid Fields
         '500':
           description: Internal Server Error
+    /users/{user-id}/transactions:
+    get:
+      tags:
+        - transactions
+      summary: Récupérer toutes les transactions du mois en cours
+      description: Récupère toutes les transactions du mois en cours, groupées par compte.
+      parameters:
+        - in: path
+          name: user-id
+          required: true
+          description: ID de l'utilisateur pour filtrer les transactions
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Requête invalide
+        '401':
+          description: Pas connecté - L'utilisateur n'est pas authentifié ou n'a pas les permissions nécessaires pour accéder à cette ressource
+        '403':
+          description: Accès refusé - L'utilisateur authentifié n'est pas autorisé à accéder à cette ressource
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur serveur interne
+      security:
+        - BearerAuth: []
+
+  /users/{user-id}/transactions/{transaction-id}:
+    get:
+      tags:
+        - transactions
+      summary: Récupérer les détails d'une transaction
+      description: Récupère les détails d'une transaction spécifique.
+      parameters:
+        - in: path
+          name: transaction-id
+          required: true
+          description: ID de la transaction à récupérer
+          schema:
+            type: string
+        - in: path
+          name: user-id
+          required: true
+          description: ID de l'utilisateur à récupérer
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Détails de la transaction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedTransaction'
+        '400':
+          description: Requête invalide
+        '401':
+          description: Pas connecté - L'utilisateur n'est pas authentifié ou n'a pas les permissions nécessaires pour accéder à cette ressource
+        '403':
+          description: Accès refusé - L'utilisateur authentifié n'est pas autorisé à accéder à cette ressource
+        '404':
+          description: Transaction non trouvée
+        '500':
+          description: Erreur serveur interne
+      security:
+        - BearerAuth: []
+    put:
+      tags:
+        - transactions
+      summary: Modifier ou supprimer des informations d'une transaction
+      description: Modifie ou supprime les informations d'une transaction spécifique.
+      parameters:
+        - in: path
+          name: transaction-id
+          required: true
+          description: ID de la transaction à modifier ou supprimer
+          schema:
+            type: string
+        - in: path
+          name: user-id
+          required: true
+          description: ID de l'utilisateur
+          schema:
+            type: string
+      requestBody:
+        description: Informations de la transaction à modifier ou à supprimer
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categoryId:
+                  type: string
+                  description: ID de la nouvelle catégorie de la transaction
+                note:
+                  type: string
+                  description: Nouvelle note de la transaction. Utilisez une chaîne vide pour supprimer la note.
+      responses:
+        '200':
+          description: Transaction mise à jour avec succès, retourne les détails de la transaction mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedTransaction'
+        '400':
+          description: Requête invalide
+        '401':
+          description: Pas connecté - L'utilisateur n'est pas authentifié ou n'a pas les permissions nécessaires pour accéder à cette ressource
+        '403':
+          description: Accès refusé - L'utilisateur authentifié n'est pas autorisé à accéder à cette ressource
+        '404':
+          description: Transaction non trouvée
+        '500':
+          description: Erreur serveur interne
+      security:
+        - BearerAuth: []
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -156,3 +280,48 @@ definitions:
     properties:
       userName:
         type: string
+  components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        amount:
+          type: number
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+    DetailedTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        amount:
+          type: number
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        transactionType:
+          type: string
+          description: Type de la transaction (e.g., "credit", "debit")
+        category:
+          type: string
+          description: Catégorie de la transaction
+        note:
+          type: string
+          description: Note additionnelle pour la transaction
+    
