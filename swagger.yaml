@@ -65,11 +65,9 @@ paths:
         - User Module
       summary: User Profile API
       description: API for fetching a user profile
-      #produces:
-       # - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile retrieved successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -94,14 +92,14 @@ paths:
         - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile retrieved successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
           description: Invalid Fields
         '500':
           description: Internal Server Error
-    /users/{user-id}/transactions:
+  /users/{user-id}/transactions:
     get:
       tags:
         - transactions
@@ -135,7 +133,6 @@ paths:
           description: Erreur serveur interne
       security:
         - BearerAuth: []
-
   /users/{user-id}/transactions/{transaction-id}:
     get:
       tags:
@@ -225,11 +222,50 @@ paths:
           description: Erreur serveur interne
       security:
         - BearerAuth: []
-securityDefinitions:
-  Bearer:
-    type: apiKey
-    name: Authorization
-    in: header
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        amount:
+          type: number
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+    DetailedTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+        accountId:
+          type: string
+        amount:
+          type: number
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        transactionType:
+          type: string
+          description: Type de la transaction (e.g., "credit", "debit")
+        category:
+          type: string
+          description: Catégorie de la transaction
+        note:
+          type: string
+          description: Note additionnelle pour la transaction
 definitions:
   User:
     properties:
@@ -280,48 +316,3 @@ definitions:
     properties:
       userName:
         type: string
-  components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-  schemas:
-    Transaction:
-      type: object
-      properties:
-        id:
-          type: string
-        accountId:
-          type: string
-        amount:
-          type: number
-        date:
-          type: string
-          format: date-time
-        description:
-          type: string
-    DetailedTransaction:
-      type: object
-      properties:
-        id:
-          type: string
-        accountId:
-          type: string
-        amount:
-          type: number
-        date:
-          type: string
-          format: date-time
-        description:
-          type: string
-        transactionType:
-          type: string
-          description: Type de la transaction (e.g., "credit", "debit")
-        category:
-          type: string
-          description: Catégorie de la transaction
-        note:
-          type: string
-          description: Note additionnelle pour la transaction
-    
