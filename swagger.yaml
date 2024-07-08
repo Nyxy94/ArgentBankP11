@@ -26,7 +26,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: Login Successfully
+          description: Login Successful
           schema:
             $ref: '#/definitions/LoginResponse'
         '400':
@@ -50,7 +50,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: Signup Successfully
+          description: Signup Successful
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -60,7 +60,7 @@ paths:
   /user/profile:
     post:
       security:
-        - Bearer: []
+        - BearerAuth: []
       tags:
         - User Module
       summary: User Profile API
@@ -76,7 +76,7 @@ paths:
           description: Internal Server Error
     put:
       security:
-        - Bearer: []
+        - BearerAuth: []
       tags:
         - User Module
       summary: User Profile API
@@ -92,7 +92,7 @@ paths:
         - application/json
       responses:
         '200':
-          description: User profile retrieved successfully
+          description: User profile updated successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -102,95 +102,86 @@ paths:
   /users/{user-id}/transactions:
     get:
       tags:
-        - transactions
-      summary: Récupérer toutes les transactions du mois en cours
-      description: Récupère toutes les transactions du mois en cours, groupées par compte.
+        - Transactions
+      summary: Retrieve all transactions for the current month
+      description: Retrieve all transactions for the current month, grouped by account.
       parameters:
         - in: path
           name: user-id
           required: true
-          description: ID de l'utilisateur pour filtrer les transactions
-          schema:
-            type: string
+          description: User ID to filter transactions
+          type: string
       responses:
         '200':
-          description: Liste des transactions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Transaction'
+          description: List of transactions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Transaction'
         '400':
-          description: Requête invalide
+          description: Invalid request
         '401':
-          description: Pas connecté - L'utilisateur n'est pas authentifié ou n'a pas les permissions nécessaires pour accéder à cette ressource
+          description: Unauthorized - User is not authenticated or does not have the necessary permissions
         '403':
-          description: Accès refusé - L'utilisateur authentifié n'est pas autorisé à accéder à cette ressource
+          description: Forbidden - Authenticated user is not allowed to access this resource
         '404':
-          description: Utilisateur non trouvé
+          description: User not found
         '500':
-          description: Erreur serveur interne
+          description: Internal server error
       security:
         - BearerAuth: []
   /users/{user-id}/transactions/{transaction-id}:
     get:
       tags:
-        - transactions
-      summary: Récupérer les détails d'une transaction
-      description: Récupère les détails d'une transaction spécifique.
+        - Transactions
+      summary: Retrieve transaction details
+      description: Retrieve details of a specific transaction.
       parameters:
         - in: path
           name: transaction-id
           required: true
-          description: ID de la transaction à récupérer
-          schema:
-            type: string
+          description: ID of the transaction to retrieve
+          type: string
         - in: path
           name: user-id
           required: true
-          description: ID de l'utilisateur à récupérer
-          schema:
-            type: string
+          description: ID of the user to retrieve
+          type: string
       responses:
         '200':
-          description: Détails de la transaction
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetailedTransaction'
+          description: Transaction details
+          schema:
+            $ref: '#/definitions/DetailedTransaction'
         '400':
-          description: Requête invalide
+          description: Invalid request
         '401':
-          description: Pas connecté - L'utilisateur n'est pas authentifié ou n'a pas les permissions nécessaires pour accéder à cette ressource
+          description: Unauthorized - User is not authenticated or does not have the necessary permissions
         '403':
-          description: Accès refusé - L'utilisateur authentifié n'est pas autorisé à accéder à cette ressource
+          description: Forbidden - Authenticated user is not allowed to access this resource
         '404':
-          description: Transaction non trouvée
+          description: Transaction not found
         '500':
-          description: Erreur serveur interne
+          description: Internal server error
       security:
         - BearerAuth: []
     put:
       tags:
-        - transactions
-      summary: Modifier ou supprimer des informations d'une transaction
-      description: Modifie ou supprime les informations d'une transaction spécifique.
+        - Transactions
+      summary: Update or delete transaction information
+      description: Update or delete the information of a specific transaction.
       parameters:
         - in: path
           name: transaction-id
           required: true
-          description: ID de la transaction à modifier ou supprimer
-          schema:
-            type: string
+          description: ID of the transaction to update or delete
+          type: string
         - in: path
           name: user-id
           required: true
-          description: ID de l'utilisateur
-          schema:
-            type: string
+          description: ID of the user
+          type: string
       requestBody:
-        description: Informations de la transaction à modifier ou à supprimer
+        description: Transaction information to update or delete
         required: true
         content:
           application/json:
@@ -199,27 +190,25 @@ paths:
               properties:
                 categoryId:
                   type: string
-                  description: ID de la nouvelle catégorie de la transaction
+                  description: ID of the new category for the transaction
                 note:
                   type: string
-                  description: Nouvelle note de la transaction. Utilisez une chaîne vide pour supprimer la note.
+                  description: New note for the transaction. Use an empty string to delete the note.
       responses:
         '200':
-          description: Transaction mise à jour avec succès, retourne les détails de la transaction mise à jour
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DetailedTransaction'
+          description: Transaction updated successfully, returns updated transaction details
+          schema:
+            $ref: '#/definitions/DetailedTransaction'
         '400':
-          description: Requête invalide
+          description: Invalid request
         '401':
-          description: Pas connecté - L'utilisateur n'est pas authentifié ou n'a pas les permissions nécessaires pour accéder à cette ressource
+          description: Unauthorized - User is not authenticated or does not have the necessary permissions
         '403':
-          description: Accès refusé - L'utilisateur authentifié n'est pas autorisé à accéder à cette ressource
+          description: Forbidden - Authenticated user is not allowed to access this resource
         '404':
-          description: Transaction non trouvée
+          description: Transaction not found
         '500':
-          description: Erreur serveur interne
+          description: Internal server error
       security:
         - BearerAuth: []
 components:
@@ -228,70 +217,71 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-  schemas:
-    Transaction:
-      type: object
-      properties:
-        id:
-          type: string
-        accountId:
-          type: string
-        amount:
-          type: number
-        date:
-          type: string
-          format: date-time
-        description:
-          type: string
-    DetailedTransaction:
-      type: object
-      properties:
-        id:
-          type: string
-        accountId:
-          type: string
-        amount:
-          type: number
-        date:
-          type: string
-          format: date-time
-        description:
-          type: string
-        transactionType:
-          type: string
-          description: Type de la transaction (e.g., "credit", "debit")
-        category:
-          type: string
-          description: Catégorie de la transaction
-        note:
-          type: string
-          description: Note additionnelle pour la transaction
 definitions:
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: string
+      accountId:
+        type: string
+      amount:
+        type: number
+      date:
+        type: string
+        format: date-time
+      description:
+        type: string
+  DetailedTransaction:
+    type: object
+    properties:
+      id:
+        type: string
+      accountId:
+        type: string
+      amount:
+        type: number
+      date:
+        type: string
+        format: date-time
+      description:
+        type: string
+      transactionType:
+        type: string
+        description: Type of the transaction (e.g., "credit", "debit")
+      category:
+        type: string
+        description: Category of the transaction
+      note:
+        type: string
+        description: Additional note for the transaction
   User:
+    type: object
     properties:
       email:
         type: string
-        description: user email
+        description: User email
       password:
         type: string
-        description: user password
+        description: User password
       firstName:
         type: string
-        description: user first name
+        description: User first name
       lastName:
         type: string
-        description: user last name
+        description: User last name
       userName:
         type: string
-        description: user public name
+        description: User public name
   Login:
+    type: object
     properties:
       email:
         type: string
-        description: user email
+        description: User email
       password:
         type: string
-        description: user password
+        description: User password
   ApiResponse:
     type: object
     properties:
@@ -316,3 +306,4 @@ definitions:
     properties:
       userName:
         type: string
+        description: User public name
